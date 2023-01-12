@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 13:27:24
-LastEditTime: 2023-01-12 14:17:15
+LastEditTime: 2023-01-12 17:49:34
 Software: VSCode
 '''
 import os
@@ -34,6 +34,7 @@ class Killer:
         
     def saveConfig(self, configFile):
         self.cfg['seat_list'] = self.seat_list
+        self.cfg['user_info'] = self.userInfo
         self.configParser.saveConfig(self.cfg)
     
     def __initSession(self):
