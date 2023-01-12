@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 12:49:30
-LastEditTime: 2023-01-12 13:11:00
+LastEditTime: 2023-01-12 13:45:35
 Software: VSCode
 '''
 
@@ -28,11 +28,12 @@ session:
   params:
     LAB_JSON: '1'
   trust_env: false
-  urls:
-    book_seat: https://hdu.huitu.zhishulib.com/Seat/Index/bookSeats
-    login: https://hdu.huitu.zhishulib.com/User/Index/login
-    query_seats: https://hdu.huitu.zhishulib.com/Seat/Index/searchSeats
   verify: false
+urls:
+  book_seat: https://hdu.huitu.zhishulib.com/Seat/Index/bookSeats
+  login: https://hdu.huitu.zhishulib.com/User/Index/login
+  query_seats: https://hdu.huitu.zhishulib.com/Seat/Index/searchSeats
+
 settings:
   interval: 3
   max_try_times: 50
@@ -51,6 +52,10 @@ user_info:
         with open(self.configFile, 'r') as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
         return self.config
+      
+    def saveConfig(self, config):
+        with open(self.configFile, 'w') as f:
+            yaml.dump(config, f)
 
 
 if __name__ == "__main__":
