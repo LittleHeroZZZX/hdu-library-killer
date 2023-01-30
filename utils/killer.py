@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 13:27:24
-LastEditTime: 2023-01-30 19:17:01
+LastEditTime: 2023-01-30 19:30:21
 Software: VSCode
 '''
 import os
@@ -35,10 +35,12 @@ class Killer:
         self.settings = self.cfg["settings"]
         self.userInfo = self.cfg["user_info"]
         self.plans = self.cfg["plans"]
+        self.plans = self.cfg["plans"]
         
     def saveConfig(self):
         self.cfg['seat_list'] = self.seat_list
         self.cfg['user_info'] = self.userInfo
+        self.cfg['plans'] = self.plans
         self.cfg['plans'] = self.plans
         self.configParser.saveConfig(self.cfg)
     
@@ -56,6 +58,8 @@ class Killer:
         loginRes = self.session.post(url=url, data=self.userInfo).json()
         if loginRes["CODE"] == "ok":
             self.uid = loginRes["DATA"]["uid"]
+        if loginRes["CODE"] == "ok":
+            self.uid = loginRes["DATA"]["uid"]
         return loginRes["CODE"] == "ok"
 
     def __queryRooms(self):
@@ -64,6 +68,9 @@ class Killer:
         queryRoomsRes = self.session.get(url=url).json()
         rawRooms = queryRoomsRes["content"]["children"][1]["defaultItems"]
         rooms = {x["name"]: unquote(x["link"]["url"]).split('?')[1] for x in rawRooms}
+        for room in rooms.keys():
+            rooms[room] = self.session.get(url=self.urls["query_seats"] + "?" + rooms[room]).json()["data"]
+            sleep(2)
         for room in rooms.keys():
             rooms[room] = self.session.get(url=self.urls["query_seats"] + "?" + rooms[room]).json()["data"]
             sleep(2)

@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-01-30 19:21:45
+LastEditTime: 2023-01-30 19:30:31
 Software: VSCode
 '''
 import os
@@ -9,7 +9,9 @@ from time import sleep
 from pprint import pprint
 from pwinput import pwinput
 from datetime import datetime
+from datetime import datetime
 from utils.killer import Killer
+from threading import Thread
 from threading import Thread
 
 
@@ -60,6 +62,7 @@ class UserInterface:
     
     def showMenu(self):
         print("1. 添加/删除待选座位方案")   
+        print("1. 添加/删除待选座位方案")   
         print("2. 批量修改方案中预约时间")
         print("3. 立即开始抢座")
         print("4. 定时抢座")
@@ -67,6 +70,7 @@ class UserInterface:
         print("6. 退出")
     
     def changePlan(self):
+        self.addPlan()
         self.addPlan()
     
     def changeTime(self):
@@ -172,4 +176,5 @@ class UserInterface:
 
 if __name__ == "__main__":
     ui = UserInterface()
+    ui.run()
     ui.run()

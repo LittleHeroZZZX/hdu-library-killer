@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 12:49:30
-LastEditTime: 2023-01-30 11:23:31
+LastEditTime: 2023-01-30 19:29:49
 Software: VSCode
 '''
 
@@ -35,6 +35,7 @@ urls:
   query_seats: https://hdu.huitu.zhishulib.com/Seat/Index/searchSeats
   query_rooms: https://hdu.huitu.zhishulib.com/Space/Category/list
   index: https://hdu.huitu.zhishulib.com/
+  index: https://hdu.huitu.zhishulib.com/
 settings:
   interval: 3
   max_try_times: 50
@@ -42,6 +43,7 @@ user_info:
   login_name: 
   org_id: '104'
   password: 
+plans: []
 plans: []
         """
     
