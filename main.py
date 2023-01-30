@@ -1,14 +1,16 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-01-15 23:32:48
+LastEditTime: 2023-01-30 11:09:30
 Software: VSCode
 '''
 import os
 from time import sleep
 from pprint import pprint
 from pwinput import pwinput
+from datetime import datetime
 from utils.killer import Killer
+from threading import Thread
 
 
 
@@ -17,7 +19,6 @@ class UserInterface:
         self.configFile = "./config/config.yaml"
         self.killer = Killer()
         self.funcs = [self.changePlan, self.changeTime, self.startNow, self.startAt, self.help, self.exit]
-    
     
     def init(self):
         
@@ -48,6 +49,8 @@ class UserInterface:
                 if self.killer.login():
                     print("登录成功")
                     self.killer.saveConfig(self.configFile)
+                    self.th = Thread(target=self.killer.updateRooms)
+                    self.th.start()
                     flag = True
                 else:
                     print("配置文件中账号密码错误，请重新输入")
@@ -56,7 +59,7 @@ class UserInterface:
                 self.setUserInfo()
     
     def showMenu(self):
-        print("1. 添加/删除待选座位方案")
+        print("1. 添加/删除待选座位方案")   
         print("2. 批量修改方案中预约时间")
         print("3. 立即开始抢座")
         print("4. 定时抢座")
@@ -64,7 +67,7 @@ class UserInterface:
         print("6. 退出")
     
     def changePlan(self):
-        pass
+        self.addPlan()
     
     def changeTime(self):
         pass
@@ -80,10 +83,71 @@ class UserInterface:
     
     def exit(self):
         exit(0)
+        
+    def run(self):
+        ui.init()
+        ui.login()
+        while True:
+            self.showMenu()
+            try:
+                choice = int(input("请输入选项："))
+                self.funcs[choice-1]()
+            except Exception as e:
+                print("输入错误，请重新输入")
+                sleep(1)
+                continue
+
+    def addPlan(self):
+        try:
+            print("请根据系统提示填写作为预约信息，过程中可随时使用ctrl+c取消填写。")       
+            num = int(input("请输入使用人数(1-4)："))
+            if num < 1 or num > 4:
+                raise Exception("人数不合法")
+            if self.th.is_alive():
+                for _ in "loading...":
+                    print(_, end="", flush=True)
+                    sleep(0.5 if self.th.is_alive() else 0.1)
+                while self.th.is_alive():
+                    print(".", end="", flush=True)
+                    sleep(0.5)
+            numRooms = len(self.killer.rooms)
+            print("\n")
+            for i in range(numRooms):
+                print(f"{i+1}. {list(self.killer.rooms.keys())[i]}")
+            print(f"请选择房间类型(1-{numRooms})：")
+            roomType = int(input())
+            if roomType < 1 or roomType > numRooms:
+                raise Exception("房间类型不合法")
+            roomType = list(self.killer.rooms.keys())[roomType-1]
+            room = self.killer.rooms[roomType]
+            print(f'本房间最早开放时间为：{room["range"]["minBeginTime"]}时，最晚开放时间为：{room["range"]["maxEndTime"]}时')
+            print(f"请输入开始使用时间（格式为yyyy-mm-dd hh:mm:ss，如2023-01-01 12:00:00）：")
+            time = input()
+            time = datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
+            if time.hour < room["range"]["minBeginTime"] or time.hour > room["range"]["maxEndTime"]:
+                raise Exception("开始时间不在房间开放时间内")
+            leftTime = room["range"]["maxEndTime"] - time.hour
+            hours = int(input(f"请输入使用时长（1-{leftTime},单位为小时）："))
+            if hours < 1 or hours > leftTime:
+                raise Exception("使用时长不合法")
+            seats = input("请输入座位号（多个座位号用逗号隔开，如1,2,3）：")
+            seats = seats+"," if seats[-1] != "," else seats
+            seats = eval(f"({seats})")
+            if len(seats) != num:
+                raise Exception("座位数与人数不匹配")
+            # todo 多人预约正确的uid
+            seatBookers = (self.killer.uid, )
+            self.killer.addPlan(roomType, time, hours, seats, seatBookers)
+            print("添加成功")
+        except KeyboardInterrupt:
+            print("已取消")
+            return
+        except Exception as e:
+            print("\033[0;31m%s\033[0m" % e)
+            print("输入错误，取消本次操作")
+            sleep(1)
+            return
+
 if __name__ == "__main__":
     ui = UserInterface()
-    ui.init()
-    ui.login()
-    ui.showMenu()
- 
-        
+    ui.run()

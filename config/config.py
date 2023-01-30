@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 12:49:30
-LastEditTime: 2023-01-12 18:54:29
+LastEditTime: 2023-01-30 10:56:10
 Software: VSCode
 '''
 
@@ -34,7 +34,7 @@ urls:
   login: https://hdu.huitu.zhishulib.com/User/Index/login
   query_seats: https://hdu.huitu.zhishulib.com/Seat/Index/searchSeats
   query_rooms: https://hdu.huitu.zhishulib.com/Space/Category/list
-
+  index: https://hdu.huitu.zhishulib.com/
 settings:
   interval: 3
   max_try_times: 50
@@ -42,6 +42,7 @@ user_info:
   login_name: 
   org_id: '104'
   password: 
+plans: []
         """
     
     def createConfig(self, config):
