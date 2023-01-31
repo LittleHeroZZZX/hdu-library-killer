@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 13:27:24
-LastEditTime: 2023-01-30 19:30:21
+LastEditTime: 2023-01-31 09:56:24
 Software: VSCode
 '''
 import os
@@ -128,7 +128,7 @@ class Killer:
         return data
     
     def run(self):
-        #  todo not finished
+        #  TODO: not finished
         for plan in self.plans:
             data = self.plan2data(plan)
             url = self.urls["book_seat"]

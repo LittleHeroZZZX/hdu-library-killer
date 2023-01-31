@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-01-30 19:30:31
+LastEditTime: 2023-01-31 09:54:09
 Software: VSCode
 '''
 import os
@@ -160,7 +160,7 @@ class UserInterface:
                 })
             if len(seats) != num:
                 raise Exception("座位数与人数不匹配")
-            # todo 多人预约正确的uid
+            # TODO: 多人预约正确的uid
             seatBookers = (self.killer.uid, )
             self.killer.addPlan(roomName, time, hours, seats, seatBookers)
             print("添加成功")
