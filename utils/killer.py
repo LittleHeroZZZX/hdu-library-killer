@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 13:27:24
-LastEditTime: 2023-01-31 09:56:24
+LastEditTime: 2023-01-31 10:10:02
 Software: VSCode
 '''
 import os
@@ -71,9 +71,6 @@ class Killer:
         for room in rooms.keys():
             rooms[room] = self.session.get(url=self.urls["query_seats"] + "?" + rooms[room]).json()["data"]
             sleep(2)
-        for room in rooms.keys():
-            rooms[room] = self.session.get(url=self.urls["query_seats"] + "?" + rooms[room]).json()["data"]
-            sleep(2)
         return rooms
     
     def __querySeats(self):
@@ -113,8 +110,8 @@ class Killer:
             "roomName": roomName,
             "beginTime": beginTime,
             "duration": duration,
-            "seatsInfo": seatsInfo,
-            "seatBookers": seatBookers
+            "seatsInfo": list(seatsInfo),
+            "seatBookers": list(seatBookers)
         })
     
     def plan2data(self, plan):

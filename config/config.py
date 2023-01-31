@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 12:49:30
-LastEditTime: 2023-01-31 09:58:20
+LastEditTime: 2023-01-31 10:11:32
 Software: VSCode
 '''
 
@@ -47,18 +47,18 @@ plans: []
 plans: []
         """
     
-    def createConfig(self, config):
+    def createConfig(self):
         with open(self.configFile, 'w+', encoding="utf-8") as f:
             self.config = yaml.load(self.template, Loader=yaml.FullLoader)
             yaml.dump(self.config, f, encoding="utf-8", allow_unicode=True)
     
     def parseConfig(self):
-        with open(self.configFile, 'r') as f:
+        with open(self.configFile, 'r', encoding="utf-8") as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
         return self.config
       
-    def saveConfig(self, config, encoding="utf-8"):
-        with open(self.configFile, 'w') as f:
+    def saveConfig(self, config):
+        with open(self.configFile, 'w', encoding="utf-8") as f:
             yaml.dump(config, f, encoding="utf-8", allow_unicode=True)
 
 

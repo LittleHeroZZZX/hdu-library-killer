@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-01-31 09:54:09
+LastEditTime: 2023-01-31 10:16:43
 Software: VSCode
 '''
 import os
@@ -62,7 +62,6 @@ class UserInterface:
     
     def showMenu(self):
         print("1. 添加/删除待选座位方案")   
-        print("1. 添加/删除待选座位方案")   
         print("2. 批量修改方案中预约时间")
         print("3. 立即开始抢座")
         print("4. 定时抢座")
@@ -70,7 +69,6 @@ class UserInterface:
         print("6. 退出")
     
     def changePlan(self):
-        self.addPlan()
         self.addPlan()
     
     def changeTime(self):
@@ -162,7 +160,7 @@ class UserInterface:
                 raise Exception("座位数与人数不匹配")
             # TODO: 多人预约正确的uid
             seatBookers = (self.killer.uid, )
-            self.killer.addPlan(roomName, time, hours, seats, seatBookers)
+            self.killer.addPlan(roomName, time, hours, seatsDictList, seatBookers)
             print("添加成功")
             self.killer.saveConfig()
         except KeyboardInterrupt:
