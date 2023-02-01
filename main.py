@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-02-01 10:35:11
+LastEditTime: 2023-02-01 10:56:04
 Software: VSCode
 '''
 import os
@@ -90,7 +90,38 @@ class UserInterface:
                 continue
     
     def changeTime(self):
-        pass
+        self.killer.showPlan()
+        try:
+            index = input("请输入要删除的预约序号（多个用英文逗号隔开，如1,2,3，输入0表示修改所有方案）：")
+            index = index+"," if index[-1] != "," else index
+            index = eval(f"({index})")
+            if any([x > len(self.killer.plans) for x in index]):
+                raise Exception(f"序号超出范围，当前共有{len(self.killer.plans)}个方案")
+            if any([x < 0 for x in index]):
+                raise Exception("序号不能小于0")
+            if 0 in index and len(index) > 1:
+                raise Exception("序号序列不能同时包含0和其他序号")
+            if 0 in index:
+                index = list(range(1, len(self.killer.plans)+1))
+            index = [x-1 for x in index]
+            print("请注意，**本模块不对预约时间和预约时长的合法性进行检查**，请您自行检查，错误的时间可能导致**封号一周**的惩罚。")
+            print(f"请输入开始使用时间（格式为yyyy-mm-dd hh:mm:ss，如2023-01-01 12:00:00）：")
+            time = input()
+            time = datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
+            hours = int(input(f"请输入使用时长，单位为小时："))
+            if hours < 0:
+                raise Exception("时长不能小于0")
+            self.killer.changeTime(index, time, hours)
+            print("修改成功")
+            sleep(1)
+            self.killer.showPlan()
+        except Exception as e:
+            print("\033[0;31m%s\033[0m" % e)
+            print("输入错误，取消本次操作")
+            sleep(1)
+            
+
+
     
     def startNow(self):
         self.killer.start()
@@ -215,6 +246,7 @@ class UserInterface:
             print("输入错误，取消本次操作")
             sleep(1)
             return
+
 if __name__ == "__main__":
     ui = UserInterface()
     ui.run()

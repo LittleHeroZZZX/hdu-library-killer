@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 13:27:24
-LastEditTime: 2023-02-01 10:38:48
+LastEditTime: 2023-02-01 10:43:46
 Software: VSCode
 '''
 import os
@@ -148,6 +148,11 @@ class Killer:
                 self.plans.remove(plan)
                 self.saveConfig("./config/config.yaml")
             sleep(5)
+            
+    def changeTime(self, index, beginTime, duration):
+        for i in index:
+            self.plans[i]["beginTime"] = beginTime
+            self.plans[i]["duration"] = duration
         
 
 if __name__ == "__main__":
