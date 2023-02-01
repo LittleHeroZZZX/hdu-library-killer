@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 13:27:24
-LastEditTime: 2023-01-31 10:10:02
+LastEditTime: 2023-02-01 10:38:48
 Software: VSCode
 '''
 import os
@@ -9,6 +9,7 @@ import requests
 import sys
 import os
 from urllib.parse import unquote
+from prettytable import PrettyTable
 from time import sleep
 import datetime as dt
 sys.path.append(os.getcwd())
@@ -58,8 +59,7 @@ class Killer:
         loginRes = self.session.post(url=url, data=self.userInfo).json()
         if loginRes["CODE"] == "ok":
             self.uid = loginRes["DATA"]["uid"]
-        if loginRes["CODE"] == "ok":
-            self.uid = loginRes["DATA"]["uid"]
+            self.name = loginRes["DATA"]["user_info"]["name"]
         return loginRes["CODE"] == "ok"
 
     def __queryRooms(self):
@@ -111,7 +111,7 @@ class Killer:
             "beginTime": beginTime,
             "duration": duration,
             "seatsInfo": list(seatsInfo),
-            "seatBookers": list(seatBookers)
+            "seatBookers": list(seatBookers),
         })
     
     def plan2data(self, plan):
@@ -124,6 +124,19 @@ class Killer:
             data[f"seatBooker{i}"] = plan["seatBookers"][i]
         return data
     
+    def showPlan(self):
+        print(f"当前共有{len(self.plans)}个预约方案")
+        if len(self.plans) == 0:
+            return
+        table = PrettyTable(["序号", "房间名", "楼层名", "座位号", "开始时间", "持续时间", "预约人"])
+        for i, plan in enumerate(self.plans):
+            seat = plan["seatsInfo"][0]
+            table.add_row([f"{i+1}", seat['roomName'], seat['floorName'], ",".join([x["seatNum"] for x in plan["seatsInfo"]]), plan['beginTime'], str(plan['duration'])+"小时", ",".join([x["bookerName"] for x in plan["seatsInfo"]])])
+        print(table)
+    
+    def deletePlan(self, index):
+        index = set(index)
+        self.plans = [x for i, x in enumerate(self.plans) if i not in index]
     def run(self):
         #  TODO: not finished
         for plan in self.plans:

@@ -1,17 +1,14 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-01-31 10:16:43
+LastEditTime: 2023-02-01 10:35:11
 Software: VSCode
 '''
 import os
 from time import sleep
-from pprint import pprint
 from pwinput import pwinput
 from datetime import datetime
-from datetime import datetime
 from utils.killer import Killer
-from threading import Thread
 from threading import Thread
 
 
@@ -61,7 +58,7 @@ class UserInterface:
                 self.setUserInfo()
     
     def showMenu(self):
-        print("1. 添加/删除待选座位方案")   
+        print("1. 查看/添加/删除待选座位方案")   
         print("2. 批量修改方案中预约时间")
         print("3. 立即开始抢座")
         print("4. 定时抢座")
@@ -69,7 +66,28 @@ class UserInterface:
         print("6. 退出")
     
     def changePlan(self):
-        self.addPlan()
+        self.killer.showPlan()
+        while True:
+            print("1. 添加方案")
+            print("2. 删除方案")
+            print("3. 返回上一级")
+            try:
+
+                choice = int(input("请输入选项："))
+                if choice == 1:
+                    self.addPlan()
+                elif choice == 2:
+                    self.deletePlan()
+                elif choice == 3:
+                    break
+                else:
+                    print("输入错误，请重新输入")
+                    sleep(1)
+                    continue
+            except Exception as e:
+                print("输入错误，请重新输入")
+                sleep(1)
+                continue
     
     def changeTime(self):
         pass
@@ -124,6 +142,8 @@ class UserInterface:
             roomName = list(self.killer.rooms.keys())[roomName-1]
             room = self.killer.rooms[roomName]
             floor = self.killer.getFloorNamesByRoom(roomName)
+            if len(floor) == 0:
+                raise Exception(f"{roomName}没有开放楼层")
             print(f"请选择楼层(1-{len(floor)})：")
             for i in range(len(floor)):
                 print(f"{i+1}. {floor[i]}")
@@ -154,7 +174,9 @@ class UserInterface:
                     "roomName": roomName,
                     "floorName": floorName,
                     "seatId": seatInfo[0]["id"],
+                    "seatNum": seatInfo[0]["title"],
                     "booker": self.killer.uid,
+                    "bookerName": self.killer.name,
                 })
             if len(seats) != num:
                 raise Exception("座位数与人数不匹配")
@@ -172,7 +194,27 @@ class UserInterface:
             sleep(1)
             return
 
+    def deletePlan(self):
+        self.killer.showPlan()
+        try:
+            index = input("请输入要删除的预约序号（多个用英文逗号隔开，如1,2,3）：")
+            index = index+"," if index[-1] != "," else index
+            index = eval(f"({index})")
+            if any([x > len(self.killer.plans) for x in index]):
+                raise Exception(f"序号超出范围，当前共有{len(self.killer.plans)}个方案")
+            if any([x < 1 for x in index]):
+                raise Exception("序号不能小于1")
+            index = [x-1 for x in index]
+            self.killer.deletePlan(index)
+            self.killer.saveConfig()
+            print("删除成功")
+            self.killer.showPlan()
+            sleep(1)
+        except Exception as e:
+            print("\033[0;31m%s\033[0m" % e)
+            print("输入错误，取消本次操作")
+            sleep(1)
+            return
 if __name__ == "__main__":
     ui = UserInterface()
-    ui.run()
     ui.run()
