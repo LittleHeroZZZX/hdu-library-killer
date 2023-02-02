@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 13:27:24
-LastEditTime: 2023-02-01 10:43:46
+LastEditTime: 2023-02-01 11:19:38
 Software: VSCode
 '''
 import os
@@ -116,12 +116,11 @@ class Killer:
     
     def plan2data(self, plan):
         data = {}
-        data["roomName"] = plan["roomName"]
-        data["beginTime"] = plan["beginTime"]
-        data["duration"] = plan["duration"]
-        for i in range(len(plan["seats"])):
-            data[f"seat{i}"] = plan["seatsInfo"][i]["seatId"]
-            data[f"seatBooker{i}"] = plan["seatBookers"][i]
+        data["beginTime"] = int(plan["beginTime"].timestamp())
+        data["duration"] = plan["duration"]*3600
+        for i in range(len(plan["seatsInfo"])):
+            data[f"seats[{i}]"] = plan["seatsInfo"][i]["seatId"]
+            data[f"seatBookers[{i}]"] = plan["seatBookers"][i]
         return data
     
     def showPlan(self):
@@ -137,17 +136,11 @@ class Killer:
     def deletePlan(self, index):
         index = set(index)
         self.plans = [x for i, x in enumerate(self.plans) if i not in index]
-    def run(self):
-        #  TODO: not finished
-        for plan in self.plans:
+    def run(self, plan):
             data = self.plan2data(plan)
             url = self.urls["book_seat"]
             res = self.session.post(url=url, data=data).json()
-            print(res)
-            if res["CODE"] == "ok":
-                self.plans.remove(plan)
-                self.saveConfig("./config/config.yaml")
-            sleep(5)
+            return res
             
     def changeTime(self, index, beginTime, duration):
         for i in index:

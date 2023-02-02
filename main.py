@@ -1,15 +1,16 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-02-01 10:56:04
+LastEditTime: 2023-02-02 15:58:37
 Software: VSCode
 '''
 import os
 from time import sleep
 from pwinput import pwinput
-from datetime import datetime
+from datetime import datetime, timedelta
 from utils.killer import Killer
 from threading import Thread
+from prettytable import PrettyTable
 
 
 
@@ -112,6 +113,7 @@ class UserInterface:
             if hours < 0:
                 raise Exception("时长不能小于0")
             self.killer.changeTime(index, time, hours)
+            self.killer.saveConfig()
             print("修改成功")
             sleep(1)
             self.killer.showPlan()
@@ -119,15 +121,51 @@ class UserInterface:
             print("\033[0;31m%s\033[0m" % e)
             print("输入错误，取消本次操作")
             sleep(1)
-            
-
-
-    
+             
     def startNow(self):
-        self.killer.start()
-
+        for retryCnt in range(self.killer.cfg["settings"]["max_try_times"]):
+            print(f"第{retryCnt+1}次尝试")
+            for i, plan in enumerate(self.killer.plans):
+                res = self.killer.run(plan)
+                if res["CODE"] == "ok":
+                    print("座位预约成功，座位信息为：")
+                    table = PrettyTable(["房间名", "楼层名", "座位号", "开始时间", "持续时间", "预约人"])
+                    seat = plan["seatsInfo"][0]
+                    table.add_row([seat['roomName'], seat['floorName'], ",".join([x["seatNum"] for x in plan["seatsInfo"]]), plan['beginTime'], str(plan['duration'])+"小时", ",".join([x["bookerName"] for x in plan["seatsInfo"]])])
+                    print(table)
+                    input("按回车键退出")
+                    return
+                else:
+                    print(f"\r第{i+1}个方案预约失败，原因为："+"\033[0;31m%s\033[0m" % res['MESSAGE'])
+                sleep(self.killer.cfg["settings"]["interval"])
+                    
     def startAt(self):
-        pass
+        try:
+            startTime = input("请输入程序开始运行时间（格式为yyyy-mm-dd hh:mm:ss，如2023-01-01 12:00:00）：")
+            startTime = datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S")
+            if startTime < datetime.now():
+                raise Exception("开始时间不能小于当前时间")
+            print(f"在倒计时过程中，您可以使用Ctrl+C终止程序")
+            while True:
+                if datetime.now() >= startTime:
+                    break
+                now = datetime.now().replace(microsecond=0)
+                left = int((startTime-datetime.now()).total_seconds())
+                if left < 60:
+                    print(f"\r当前时间为{now}，预约开始时间为{startTime}，还有{left}秒，请耐心等待", end="", flush=True)
+                elif left < 3600:
+                    print(f"\r当前时间为{now}，预约开始时间为{startTime}，还有{left//60}分{left%60}秒，请耐心等待", end="", flush=True)
+                else:
+                    print(f"\r当前时间为{now}，预约开始时间为{startTime}，还有{left//3600}时{left%3600//60}分{left%60}秒，请耐心等待", end="", flush=True)
+                sleep(1)
+            self.startNow()
+        except KeyboardInterrupt:
+            print("程序终止")
+            return
+        except Exception as e:
+            print("\033[0;31m%s\033[0m" % e)
+            print("输入错误，取消本次操作")
+            sleep(1)
     
     def help(self):
         pass
