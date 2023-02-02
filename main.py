@@ -1,16 +1,18 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-02-02 15:58:37
+LastEditTime: 2023-02-02 16:28:50
 Software: VSCode
 '''
 import os
 from time import sleep
 from pwinput import pwinput
-from datetime import datetime, timedelta
+from datetime import datetime
 from utils.killer import Killer
+from utils.window import maximizeWindow
 from threading import Thread
 from prettytable import PrettyTable
+
 
 
 
@@ -286,5 +288,6 @@ class UserInterface:
             return
 
 if __name__ == "__main__":
+    maximizeWindow()
     ui = UserInterface()
     ui.run()
