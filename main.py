@@ -1,7 +1,7 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-02-02 17:30:45
+LastEditTime: 2023-02-02 18:02:32
 Software: VSCode
 '''
 import os
@@ -23,7 +23,7 @@ class UserInterface:
     def __init__(self):
         self.configFile = "./config/config.yaml"
         self.killer = Killer()
-        self.funcs = [self.changePlan, self.changeTime, self.startNow, self.startAt, self.help, self.exit]
+        self.funcs = [self.changePlan, self.changeTime, self.startNow, self.startAt,self.setSettings, self.help, self.exit]
     
     def init(self):
         
@@ -68,8 +68,9 @@ class UserInterface:
         print("2. 批量修改方案中预约时间")
         print("3. 立即开始抢座")
         print("4. 定时抢座")
-        print("5. 使用帮助")
-        print("6. 退出")
+        print("5. 修该请求间隔和次数")
+        print("6. 使用帮助")
+        print("7. 退出")
     
     def changePlan(self):
         self.killer.showPlan()
@@ -181,6 +182,13 @@ class UserInterface:
         input("按回车键返回")
     
     def exit(self):
+        if self.th.is_alive():
+            for _ in "请等待其他线程结束...":
+                    print(_, end="", flush=True)
+                    sleep(0.5 if self.th.is_alive() else 0.1)
+            while self.th.is_alive():
+                print(".", end="", flush=True)
+                sleep(0.5)
         exit(0)
         
     def run(self):
@@ -288,6 +296,27 @@ class UserInterface:
             self.killer.saveConfig()
             print("删除成功")
             self.killer.showPlan()
+            sleep(1)
+        except Exception as e:
+            print("\033[0;31m%s\033[0m" % e)
+            print("输入错误，取消本次操作")
+            sleep(1)
+            return
+        
+    def setSettings(self):
+        try:
+            print("当前设置：")
+            sleep(0.1)
+            print(f"重试间隔：{self.killer.cfg['settings']['interval']}秒")
+            sleep(0.1)
+            print(f"最大重试次数：{self.killer.cfg['settings']['max_try_times']}次")
+            sleep(0.1)
+            time = input("请输入重试间隔（单位为秒），过小的重试间隔有可能导致**封号一周**的处罚，强烈建议该值不小于5秒：")
+            times = input("请输入最大重试次数：")
+            self.killer.cfg['settings']['interval'] = int(time)
+            self.killer.cfg['settings']['max_try_times'] = int(times)
+            self.killer.saveConfig()
+            print("设置成功")
             sleep(1)
         except Exception as e:
             print("\033[0;31m%s\033[0m" % e)
