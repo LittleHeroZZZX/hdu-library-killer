@@ -1,10 +1,12 @@
 '''
 Author: littleherozzzx zhou.xin2022.code@outlook.com
 Date: 2023-01-12 16:38:00
-LastEditTime: 2023-02-02 16:28:50
+LastEditTime: 2023-02-02 17:30:45
 Software: VSCode
 '''
 import os
+import sys
+
 from time import sleep
 from pwinput import pwinput
 from datetime import datetime
@@ -12,6 +14,7 @@ from utils.killer import Killer
 from utils.window import maximizeWindow
 from threading import Thread
 from prettytable import PrettyTable
+
 
 
 
@@ -170,7 +173,12 @@ class UserInterface:
             sleep(1)
     
     def help(self):
-        pass
+        if sys.platform == "win32":
+            os.startfile(r"docs\help.md")
+        else:
+            with open("docs/help.md", "r") as f:
+                print(f.read())
+        input("按回车键返回")
     
     def exit(self):
         exit(0)
