@@ -15,13 +15,15 @@ from utils.window import maximizeWindow
 from threading import Thread
 from prettytable import PrettyTable
 
+from argparse import ArgumentParser
+
 
 
 
 
 class UserInterface:
-    def __init__(self):
-        self.configFile = "./config/config.yaml"
+    def __init__(self, args=None):
+        self.configFile = "./config/config.yaml" if args is None else args.config
         self.killer = Killer()
         self.funcs = [self.changePlan, self.changeTime, self.startNow, self.startAt,self.setSettings, self.help, self.exit]
     
@@ -326,5 +328,8 @@ class UserInterface:
 
 if __name__ == "__main__":
     maximizeWindow()
-    ui = UserInterface()
+    parse = ArgumentParser()
+    parse.add_argument("-c", "--config", type=str, default="config.yaml", help="config file path")
+    args = parse.parse_args()
+    ui = UserInterface(args=args)
     ui.run()
