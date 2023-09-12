@@ -12,6 +12,9 @@ from urllib.parse import unquote
 from prettytable import PrettyTable
 from time import sleep
 import datetime as dt
+import hashlib
+import base64
+import json
 sys.path.append(os.getcwd())
 
 from config.config import ConfigParser
@@ -49,6 +52,7 @@ class Killer:
         import urllib3
         urllib3.disable_warnings()
         self.session = requests.Session()
+        self.session.headers.clear()
         self.session.headers = self.sessionCfg['headers']
         self.session.trust_env = self.sessionCfg['trust_env']
         self.session.verify = self.sessionCfg['verify']
@@ -120,8 +124,14 @@ class Killer:
         data["duration"] = plan["duration"]*3600
         for i in range(len(plan["seatsInfo"])):
             data[f"seats[{i}]"] = plan["seatsInfo"][i]["seatId"]
+        data["is_recommend"] = 0
+        data["api_time"] = int(dt.datetime.now().timestamp())
+        for i in range(len(plan["seatsInfo"])):
             data[f"seatBookers[{i}]"] = plan["seatBookers"][i]
-        return data
+        apiToken = f"post&/Seat/Index/bookSeats?LAB_JSON=1&api_time{data['api_time']}&beginTime{data['beginTime']}&duration{data['duration']}&is_recommend0&seatBookers[0]{data['seatBookers[0]']}&seats[0]{data['seats[0]']}"
+        md5 = hashlib.md5(apiToken.encode("utf-8")).hexdigest()
+        apiToken = base64.b64encode(md5.encode("utf-8"))
+        return data, apiToken
     
     def showPlan(self):
         print(f"当前共有{len(self.plans)}个预约方案")
@@ -137,8 +147,10 @@ class Killer:
         index = set(index)
         self.plans = [x for i, x in enumerate(self.plans) if i not in index]
     def run(self, plan):
-            data = self.plan2data(plan)
+            data, Api_Token = self.plan2data(plan)
             url = self.urls["book_seat"]
+            self.session.headers["Api-Token"] = Api_Token.decode()
+            self.session.headers["Content-Length"] = "114"
             res = self.session.post(url=url, data=data).json()
             return res
             
@@ -154,8 +166,6 @@ if __name__ == "__main__":
     killer = Killer()
     killer.init("./config/config.yaml")
     print(killer.login())
-    print(killer.updateRooms())
-    print(killer.rooms)
-    print(killer.getFloorNamesByRoom("自习室"))
+    killer.run(killer.plans[0])
         
         

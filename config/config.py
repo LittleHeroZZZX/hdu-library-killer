@@ -23,8 +23,22 @@ data:
 seat_list: []
 session:
   headers:
-    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101
-      Firefox/101.0
+    Host: hdu.huitu.zhishulib.com
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0
+    Accept: application/json, text/plain, */*
+    Accept-Language: "zh-CN,en-US;q=0.7,en;q=0.3"
+    Accept-Encoding: gzip, deflate, br
+    api-token: MTEyY2U0ZjZlYzk5MjdhY2NkZmZhYjk0NGU5ZjhiNjY=
+    content-type: application/x-www-form-urlencoded;charset=utf-8
+    Content-Length: "114"
+    Origin: https://hdu.huitu.zhishulib.com
+    Connection: keep-alive
+    Referer: https://hdu.huitu.zhishulib.com/
+    Sec-Fetch-Dest: empty
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Site: same-origin
+    Pragma: no-cache
+    Cache-Control: no-cache
   params:
     LAB_JSON: '1'
   trust_env: false
