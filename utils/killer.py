@@ -69,6 +69,7 @@ class Killer:
     def __queryRooms(self):
         # 查询所有可用的房间类型，返回一个字典，键为房间名，值为房间对应的请求参数
         url = self.urls["query_rooms"]
+        self.session.cookies.update({"org_id":"104"})
         queryRoomsRes = self.session.get(url=url).json()
         rawRooms = queryRoomsRes["content"]["children"][1]["defaultItems"]
         rooms = {x["name"]: unquote(x["link"]["url"]).split('?')[1] for x in rawRooms}

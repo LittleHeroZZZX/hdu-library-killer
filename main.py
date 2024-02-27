@@ -209,9 +209,10 @@ class UserInterface:
     def addPlan(self):
         try:
             print("请根据系统提示填写作为预约信息，过程中可随时使用ctrl+c取消填写。")       
-            num = int(input("请输入使用人数(1-4)："))
-            if num < 1 or num > 4:
-                raise Exception("人数不合法")
+            # num = int(input("请输入使用人数(1-4)："))
+            # if num < 1 or num > 4:
+            #     raise Exception("人数不合法")
+            num=1
             if self.th.is_alive():
                 print("正在初始化楼层和座位信息（为避免频繁请求而导致封号，此过程可能需要几秒，请耐心等待）")
                 for _ in "loading...":
@@ -329,7 +330,7 @@ class UserInterface:
 if __name__ == "__main__":
     maximizeWindow()
     parse = ArgumentParser()
-    parse.add_argument("-c", "--config", type=str, default="config.yaml", help="config file path")
+    parse.add_argument("-c", "--config", type=str, default="config/config.yaml", help="config file path")
     args = parse.parse_args()
     ui = UserInterface(args=args)
     ui.run()
