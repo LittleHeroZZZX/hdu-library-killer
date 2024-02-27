@@ -22,7 +22,7 @@
 1. 克隆本项目
 
 ``` shell
-git clone git@github.com:LittleHeroZZZX/hdu-library-killer.git
+git https://github.com/LittleHeroZZZX/hdu-library-killer.git
 cd hdu-library-killer
 ```
 
@@ -39,9 +39,4 @@ python main.py
 ```
 
 4. 根据软件提示登录、查看使用说明。
-
-## TODO
-
-- [ ] 多人座位预约
-- [ ] 取消预约
 
